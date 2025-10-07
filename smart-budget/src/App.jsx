@@ -1,5 +1,5 @@
 import { useState, useMemo } from "react"; // Ya no necesitas useEffect aquí
-import "./app.css";
+import "./App.css";
 import logo from "./assets/logo2.png";
 
 const TYPES = ["income", "expense"];
