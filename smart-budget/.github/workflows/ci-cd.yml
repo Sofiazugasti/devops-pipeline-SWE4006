@@ -1,0 +1,40 @@
+name: CI/CD - Build and Test
+# runs every push in the main or in any pull request 
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+    # Clone my repo so that the workflow has acces to code 
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      #node.js
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20' 
+
+      # project dependencies
+      - name: Install dependencies
+        run: npm install
+
+      # 4. code quiality 
+      - name: Run linting
+        run: npm run lint
+
+      # 5. (Importante) Ejecuta las pruebas para asegurar que todo funciona
+      # Nota: Necesitarás configurar pruebas en tu proyecto (ej. con Vitest)
+      # Por ahora, puedes omitir este paso si no tienes tests.
+      # - name: Run tests
+      #   run: npm run test
+
+      # buid the app 
+      - name: Build application
+        run: npm run build

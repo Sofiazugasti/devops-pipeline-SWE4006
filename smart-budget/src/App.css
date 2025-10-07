@@ -1,42 +1,136 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+/*
+  This file contains all the styling for the SmartBudget web app.
+  It defines the layout, colours, and spacing for all UI elements.
+  The design is intentionally simple and responsive for easy reading.
+*/
+:root {
+  --bg: #37B6FF;
+  --card: #0a000069;
+  --ink: #ffffff;
+  --muted: #ffffff;
+  --brand: #0b76da;
+  --brand-ink: #f1f2f4;
+  --line: #e4eef7;
+  --good: #0a8f3f;
+  --bad: #b00020;
+}
+
+* { box-sizing: border-box; }
+html, body, #root { height: 100%; }
+body {
+  margin: 0;
+  font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  color: var(--ink);
+  background: var(--bg);
+}
+
+.page {
+  max-width: 1000px;
+  margin: 24px auto 48px;
+  padding: 0 16px;
+}
+
+.header { text-align: left; margin-bottom: 12px; }
+.header h1 { margin: 0 0 4px; font-size: 28px; color: var(--brand); }
+.tagline { margin: 0; color: var(--muted); }
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
 }
 
 .logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+  height: 55px;    
+  width: auto;  
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.summary-card { margin-top: 8px; }
+.summary-title { font-weight: 700; color: var(--brand-ink); margin-bottom: 10px; }
+
+.summary-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  align-items: center;
+}
+.metric { display: flex; gap: 8px; align-items: baseline; }
+.metric-label { color: var(--muted); }
+.metric-value { font-weight: 700; }
+.metric-value.bad { color: var(--bad); }
+.spent-line {
+  margin: 10px 0 0;
+  color: var(--muted);
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
+.entry-card { margin-top: 16px; }
+.mode-toggle {
+  display: inline-flex; border: 1px solid var(--line); border-radius: 8px; overflow: hidden;
+  margin-bottom: 12px;
+}
+.mode-btn {
+  padding: 8px 12px; background: #f2f7fc; color: var(--brand-ink);
+  border: none; cursor: pointer; font-weight: 600;
+}
+.mode-btn + .mode-btn { border-left: 1px solid var(--line); }
+.mode-btn.active { background: var(--brand); color: #fff; }
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr auto;
+  gap: 10px;
+  align-items: end;
+}
+.form-field { display: flex; flex-direction: column; gap: 6px; }
+.form-field label { font-size: 12px; color: var(--muted); }
+.form-field input, .form-field select {
+  height: 36px; border: 1px solid var(--line); border-radius: 8px; padding: 0 10px;
+  outline: none;
+}
+.form-field input:focus, .form-field select:focus { border-color: var(--brand); }
+
+.span-2 { grid-column: span 2; }
+
+.form-actions { display: flex; justify-content: flex-end; }
+.add-btn {
+  height: 36px; padding: 0 18px; border-radius: 8px; border: none; cursor: pointer;
+  background: var(--brand); color: #fff; font-weight: 700;
+}
+.add-btn:hover { background: var(--brand-ink); }
+
+.columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-top: 16px;
 }
 
-.card {
-  padding: 2em;
+.col h3 { margin: 4px 0 12px; color: var(--brand-ink); }
+.list-header, .row {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 8px; align-items: center;
 }
+.list-header { color: var(--muted); font-size: 14px; border-bottom: 1px solid var(--line); padding-bottom: 6px; }
+.list { list-style: none; margin: 0; padding: 0; }
+.row { padding: 10px 0; border-bottom: 1px solid var(--line); position: relative; }
+.row.three, .list-header.three { grid-template-columns: 1fr 1fr 1fr; }
+.cell.money { text-align: right; font-weight: 700; }
 
-.read-the-docs {
-  color: #888;
+.x {
+  position: absolute; right: 0; top: 50%; transform: translateY(-50%);
+  background: transparent; border: none; color: var(--muted); font-size: 22px;
+  cursor: pointer; padding: 0 6px;
+}
+.x:hover { color: var(--bad); }
+
+.empty { color: var(--muted); padding: 8px 0; }
+
+.footer { margin-top: 18px; color: var(--muted); text-align: center; }
+
+@media (max-width: 800px) {
+  .summary-row { grid-template-columns: 1fr; align-items: center; }
+  .form-grid { grid-template-columns: 1fr 1fr; }
+  .span-2 { grid-column: span 1; }
+  .columns { grid-template-columns: 1fr; }
 }
