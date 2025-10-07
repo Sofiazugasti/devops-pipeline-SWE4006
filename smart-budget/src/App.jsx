@@ -126,9 +126,6 @@ export default function App() {
               <li key={`inc-${idx}`} className="row">
                 <span className="cell">{row.label}</span>
                 <span className="cell money">{money(row.amount)}</span>
-                <button className="x" onClick={() => removeIncome(idx)} aria-label="delete">
-                  ×
-                </button>
               </li>
             ))}
           </ul>
@@ -146,9 +143,6 @@ export default function App() {
               <li key={`exp-${idx}`} className="row">
                 <span className="cell">{row.label}</span>
                 <span className="cell money">{money(row.amount)}</span>
-                <button className="x" onClick={() => removeExpense(idx)} aria-label="delete">
-                  ×
-                </button>
               </li>
             ))}
           </ul>
