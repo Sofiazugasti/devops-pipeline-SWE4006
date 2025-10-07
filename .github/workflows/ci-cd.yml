@@ -10,9 +10,6 @@ on:
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./smart-budget
 
     steps:
       # my repo clone
@@ -28,15 +25,16 @@ jobs:
       # 3. Project dependencies
       - name: Install dependencies
         run: npm install
+        working-directory: ./smart-budget
 
-      # 4. Quility code
+      # Paso 4: Ejecuta el linter
+      # Y a este también
       - name: Run linting
         run: npm run lint
+        working-directory: ./smart-budget
 
-      # Test. 
-      # - name: Run tests
-      #   run: npm run test
-
-      # 6. App buid
+      # Paso 5: Construye la aplicación
+      # Y a este también
       - name: Build application
         run: npm run build
+        working-directory: ./smart-budget
