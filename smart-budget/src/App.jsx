@@ -5,15 +5,9 @@ import logo from "./assets/logo2.png";
 const TYPES = ["income", "expense"];
 
 export default function App() {
-  // estado principal - MODIFICADO: Ahora inicia siempre vacío
   const [income, setIncome] = useState([]);
   const [expenses, setExpenses] = useState([]);
   const [form, setForm] = useState({ type: "income", label: "", amount: "" });
-
-  // persistencia local - ELIMINADO
-  // Los useEffect que guardaban en localStorage se han quitado.
-
-  // cálculos derivados (dinámicos)
   const totalIncome = useMemo(() => income.reduce((s, r) => s + Number(r.amount || 0), 0), [income]);
   const totalExpenses = useMemo(
     () => expenses.reduce((s, r) => s + Number(r.amount || 0), 0),
@@ -22,7 +16,6 @@ export default function App() {
   const balance = totalIncome - totalExpenses;
   const spentPct = totalIncome ? ((totalExpenses / totalIncome) * 100).toFixed(1) : "0.0";
 
-  // helper de formato
   const money = (n) => (Number(n) || 0).toLocaleString(undefined, { style: "currency", currency: "USD" });
 
   // acciones
@@ -37,9 +30,6 @@ export default function App() {
     }
     setForm({ type: form.type, label: "", amount: "" });
   };
-
-  const removeIncome = (idx) => setIncome((prev) => prev.filter((_, i) => i !== idx));
-  const removeExpense = (idx) => setExpenses((prev) => prev.filter((_, i) => i !== idx));
 
   return (
     <div className="page">
