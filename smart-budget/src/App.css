@@ -11,8 +11,6 @@
   --brand: #0b76da;
   --brand-ink: #f1f2f4;
   --line: #e4eef7;
-  --good: #0a8f3f;
-  --bad: #b00020;
 }
 
 * { box-sizing: border-box; }
@@ -59,7 +57,6 @@ body {
 .metric { display: flex; gap: 8px; align-items: baseline; }
 .metric-label { color: var(--muted); }
 .metric-value { font-weight: 700; }
-.metric-value.bad { color: var(--bad); }
 .spent-line {
   margin: 10px 0 0;
   color: var(--muted);
@@ -98,7 +95,7 @@ body {
   height: 36px; padding: 0 18px; border-radius: 8px; border: none; cursor: pointer;
   background: var(--brand); color: #fff; font-weight: 700;
 }
-.add-btn:hover { background: var(--brand-ink); }
+.add-btn:hover { background: var(--brand-ink); color: var(--brand); }
 
 .columns {
   display: grid;

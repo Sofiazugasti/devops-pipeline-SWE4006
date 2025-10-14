@@ -31,6 +31,11 @@ export default function App() {
     setForm({ type: form.type, label: "", amount: "" });
   };
 
+ const handleDelete = () => {
+  setIncome([]);
+  setExpenses([]);
+};
+
   return (
     <div className="page">
       <header className="header">
@@ -136,6 +141,9 @@ export default function App() {
               </li>
             ))}
           </ul>
+        </div>
+        <div className="form-actions">
+          <button className="add-btn" onClick={handleDelete}>Delete balance</button>
         </div>
       </section>
     </div>
