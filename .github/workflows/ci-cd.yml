@@ -1,6 +1,6 @@
 name: CI - Build and Test
 
-# runs on every push to main and every pull request
+# Runs on every push to main and every pull request
 on:
   push:
     branches: [ main ]
