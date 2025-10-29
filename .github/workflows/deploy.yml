@@ -51,6 +51,27 @@ jobs:
             --resource-group $AZURE_RG \
             --name $AZURE_WEBAPP \
             --settings WEBSITES_PORT=8080
+            
+      - name: Configure container on web app
+        run: |
+          az webapp config container set \
+            --resource-group $AZURE_RG \
+            --name $AZURE_WEBAPP \
+            --docker-custom-image-name $ACR_LOGIN_SERVER/$IMAGE_NAME:${{ github.sha }} \
+            --docker-registry-server-url https://$ACR_LOGIN_SERVER
+          az webapp config appsettings set \
+            --resource-group $AZURE_RG \
+            --name $AZURE_WEBAPP \
+            --settings WEBSITES_PORT=8080
+
+      # Force ACR pulls via Managed Identity
+      - name: Use Managed Identity for ACR pulls
+        run: |
+          az webapp config set \
+            --resource-group $AZURE_RG \
+            --name $AZURE_WEBAPP \
+            --generic-configurations '{"acrUseManagedIdentityCreds": true}'
+
 
       - name: Warmup & smoke test
         run: |
