@@ -1,15 +1,24 @@
-# Build stage
+#Build stage
 FROM node:20-alpine AS build
 WORKDIR /app
-COPY smart-budget/package*.json ./smart-budget/
-WORKDIR /app/smart-budget
+
+# Only copy manifests first for better layer caching
+COPY smart-budget/package*.json ./
 RUN npm ci
+
+# Copy the rest of the app and build
 COPY smart-budget/ .
 RUN npm run build
 
-# Runtime stage (static serve with nginx)
-FROM nginx:1.27-alpine
-COPY --from=build /app/smart-budget/dist /usr/share/nginx/html
-# SPA fallback for client-side routing
-RUN printf "server {\n  listen 8080;\n  root /usr/share/nginx/html;\n  location / {\n    try_files \$uri /index.html;\n  }\n}\n" > /etc/nginx/conf.d/default.conf
+# Runtime stage
+FROM node:20-alpine
+WORKDIR /app
+# Serve static files from /dist using "serve"
+RUN npm i -g serve
+
+# Copy the build output from the previous stage
+COPY --from=build /app/dist ./dist
+
+# Azure App Service for Linux expects the container to listen on 8080
 EXPOSE 8080
+CMD ["serve", "-s", "dist", "-l", "8080"]
