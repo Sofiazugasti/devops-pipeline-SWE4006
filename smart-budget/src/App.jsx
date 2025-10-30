@@ -142,8 +142,9 @@ export default function App() {
             ))}
           </ul>
         </div>
-        <div className="form-actions">
-          <button className="add-btn" onClick={handleDelete}>Delete balance</button>
+          <div className="form-actions">
+            <button className="add-btn" onClick={handleAdd}>Add</button>
+
         </div>
       </section>
     </div>
