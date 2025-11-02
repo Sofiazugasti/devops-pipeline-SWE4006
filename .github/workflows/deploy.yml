@@ -1,0 +1,76 @@
+name: CD - Docker Build, Push, Deploy (Azure)
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+
+env:
+  IMAGE_NAME: smartbudget
+  ACR_LOGIN_SERVER: ${{ vars.ACR_LOGIN_SERVER }}   # p.ej. miacr.azurecr.io
+  AZURE_RG:        ${{ vars.AZURE_RG }}            # p.ej. rg-smartbudget
+  AZURE_WEBAPP:    ${{ vars.AZURE_WEBAPP_NAME }}   # p.ej. smartbudget-web-xxxxx
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Azure login (OIDC)
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      # Importante: az acr login necesita el NOMBRE del ACR (sin .azurecr.io)
+      - name: ACR login
+        shell: bash
+        run: |
+          ACR_NAME=$(echo "${{ env.ACR_LOGIN_SERVER }}" | sed 's/\.azurecr\.io$//')
+          az acr login --name "$ACR_NAME"
+
+      - name: Build image
+        run: |
+          docker build \
+            -t $ACR_LOGIN_SERVER/$IMAGE_NAME:${{ github.sha }} \
+            -f Dockerfile .
+        # El Dockerfile del repo sirve el build de smart-budget/dist en 8080
+
+      - name: Push image
+        run: docker push $ACR_LOGIN_SERVER/$IMAGE_NAME:${{ github.sha }}
+
+      - name: Configure container on Web App
+        run: |
+          az webapp config container set \
+            --resource-group $AZURE_RG \
+            --name $AZURE_WEBAPP \
+            --docker-custom-image-name $ACR_LOGIN_SERVER/$IMAGE_NAME:${{ github.sha }} \
+            --docker-registry-server-url https://$ACR_LOGIN_SERVER
+          az webapp config appsettings set \
+            --resource-group $AZURE_RG \
+            --name $AZURE_WEBAPP \
+            --settings WEBSITES_PORT=8080
+
+      # Usar Managed Identity del Web App para hacer pull del ACR
+      - name: Use Managed Identity for ACR pulls
+        run: |
+          az webapp config set \
+            --resource-group $AZURE_RG \
+            --name $AZURE_WEBAPP \
+            --generic-configurations '{"acrUseManagedIdentityCreds": true}'
+
+      - name: Restart app
+        run: az webapp restart --resource-group $AZURE_RG --name $AZURE_WEBAPP
+
+      - name: Warmup & smoke test
+        shell: bash
+        run: |
+          sleep 20
+          curl -I "https://${{ env.AZURE_WEBAPP }}.azurewebsites.net"
